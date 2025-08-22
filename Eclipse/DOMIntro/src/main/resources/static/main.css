@@ -1,0 +1,160 @@
+html:lang(no) {
+    quotes: "«" "»" '"' '"';
+}
+
+dt {
+    font-weight: bold
+}
+
+dt:after {
+    content: ":";
+    font-weight: bold
+}
+
+/* Redefinerer stil på lenker */
+a:link {
+    text-decoration: none;
+    color: blue;
+    background-color: white;
+    padding: 0px;
+    margin: 0px;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #9400D3;
+    background-color: white;
+    padding: 0px;
+    margin: 0px;
+}
+
+a:active {
+    text-decoration: none;
+    color: black;
+    background-color: white;
+    padding: 0px;
+    margin: 0px;
+}
+
+a:visited:hover {
+    color: white;
+    background-color: #9400D3;
+    padding: 0px;
+    margin: 0px;
+}
+
+a:link:hover {
+    color: white;
+    background-color: blue;
+    padding: 0px;
+    margin: 0px;
+}
+
+table {
+    border-collapse: collapse;
+    empty-cells: show;
+}
+
+caption {
+    background-color: red;
+    color: white;
+}
+
+/* Ønsker konstruksjoner som fjerner avstand foran lister etc */
+p.liste {
+    margin-bottom: 0.1mm
+}
+
+p.liste+* {
+    margin-top: 0em
+}
+
+p.liste+*>*:first-child {
+    margin-top: 0em
+}
+
+p.liste+*>*:first-child>*:first-child {
+    margin-top: 0em
+}
+
+p.liste+div.demo {
+    margin-top: 0.5em;
+}
+
+p.liste+div.kode {
+    margin-top: 0.5em;
+}
+
+p.liste+pre.kode {
+    margin-top: 0.5em;
+}
+
+p.liste+table {
+    margin-top: 0.5em;
+}
+
+var, code {
+    white-space: nowrap;
+}
+
+blockquote {
+    font-style: italic;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+td>p:first-child {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+button[data-demo]:before {
+    content: attr(data-demo)
+}
+
+div.oppgave {
+    margin: 10px 0;
+    /*  background: #DDD;
+  padding: 10px 5px; */
+    padding: 5px 10px;
+    border: 1px solid red;
+    counter-increment: oppgnr;
+}
+
+.demo {
+    margin: 10px 0;
+    padding: 5px 10px;
+    border: 1px solid red;
+}
+
+div.oppgave:before {
+    content: "Oppgave " counter(oppgnr) ":";
+    color: red;
+    display: block;
+}
+
+ol>li {
+    list-style-type: lower-alpha;
+}
+
+ol>li ol>li {
+    list-style-type: lower-roman;
+}
+
+td, th {
+    padding: 5px;
+}
+
+dd p:first-child {
+    margin-top: 0
+}
+
+dd p:last-child {
+    margin-bottom: 0
+}
+
+.emph {
+    color: red;
+}

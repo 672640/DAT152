@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Author" content="Bjarte Wang-Kileng" />
+    <link rel="shortcut icon" href="#">
+
+    <script defer src="js/classlist.js"></script>
+    <link href="main.css" rel="stylesheet" type="text/css" />
+    <title>classList</title>
+    <style>
+        .newstyle {
+            background-color: blue;
+            color: green;
+            padding: 1cm;
+            border: 2px solid red;
+        }
+
+        .details {
+            border: 20px groove blue
+        }
+
+        .example {
+            color: green;
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .webdisplay {
+            background-color: red
+        }
+    </style>
+</head>
+
+<body>
+    <h1>classList</h1>
+    <p">All utskrift fra JavaScript-koden skrives til web konsollet.</p>
+
+    <p id="welcome">This P element has ID equal to <strong>welcome</strong>.</p>
+
+    <div id="demoHandler">
+        <form>
+            <fieldset>
+                <legend>Class name count</legend>
+                <button type="button" data-demo="demo0">: Count</button>
+            </fieldset>
+            <fieldset>
+                <legend>Listing all class names</legend>
+                <button type="button" data-demo="demo1"></button>
+                <button type="button" data-demo="demo2"></button>
+            </fieldset>
+            <fieldset>
+                <legend>Toggle on class name</legend>
+                <button type="button" data-demo="demo3">: class name details</button>
+                <button type="button" data-demo="demo4">: class name example</button>
+                <button type="button" data-demo="demo5">: class name webdisplay</button>
+            </fieldset>
+            <fieldset>
+                <legend>Check on class name</legend>
+                <button type="button" data-demo="demo6">: class name details</button>
+                <button type="button" data-demo="demo7">: class name example</button>
+                <button type="button" data-demo="demo8">: class name webdisplay</button>
+            </fieldset>
+            <fieldset>
+                <legend>Removing all class names</legend>
+                <button type="button" data-demo="demo9"></button>
+                <button type="button" data-demo="demo10"></button>
+                <button type="button" data-demo="demo11"></button>
+            </fieldset>
+            <fieldset>
+                <legend>Add class name</legend>
+                <button type="button" data-demo="demo12">: class name details</button>
+                <button type="button" data-demo="demo13">: class name example</button>
+                <button type="button" data-demo="demo14">: class name webdisplay</button>
+        </form>
+        <pre data-viewelm></pre>
+    </div>
+</body>
+
+</html>
