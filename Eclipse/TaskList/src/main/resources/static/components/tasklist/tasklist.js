@@ -32,7 +32,13 @@ class TaskList extends HTMLElement {
 
     constructor() {
         super();
-
+        this.attachShadow({mode: "open"});
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this._statuses = [];
+        this._changestatusCallback = null;
+        this._deletetaskCallback = null;
+        this._tasks = [];
+        this._table = null;
         /**
          * Fill inn rest of the code
          */
@@ -79,6 +85,10 @@ class TaskList extends HTMLElement {
         /**
          * Fill inn the code
          */
+        if(!this._table) {
+            
+        }
+
     }
 
     /**
