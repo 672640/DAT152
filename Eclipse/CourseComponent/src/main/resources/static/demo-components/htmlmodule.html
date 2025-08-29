@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+    <meta name="Author" content="Bjarte Wang-Kileng" />
+    <link rel="shortcut icon" href="#">
+    <link href="../main.css" rel="stylesheet" type="text/css" />
+    <title>HTML modules</title>
+    <script src="components/courseinfo-htmlmodule/courseinfo-htmlmodule.js" type='module'></script>
+
+</head>
+
+<body>
+    <h1>HTML modules</h1>
+
+    <p class="readonly">This demonstration will fail!</p>
+
+    <p class="readonly">This demonstration is not subject for the exam.</p>
+
+    <p>There is yet no browser support for HTML modules. This example demonstrates how HTML modules can be used
+        in the future.</p>
+
+    <course-info></course-info>
+
+    <course-info>
+        <span slot="topic">Globalization</span>
+        <span slot="lecturer">Tosin Daniel Oyetoyan</span>
+    </course-info>
+
+    <course-info>
+        <span slot="course">DAT151</span>
+        <span slot="topic">Database Management</span>
+    </course-info>
+
+
+    <p>A component should be isolated from the main document, both
+        CSS and JavaScript, and should be loaded into the document using
+        a single entry point.</p>
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+<meta name="Author" content="Bjarte Wang-Kileng" />
+<link rel="shortcut icon" href="#">
+<title>Components demo</title>
+<script src="components/courseinfo/courseinfo.js" type='module'></script>
+<style>
+    p {background-color: #DDD;}
+</style>
+</head>
+
+<body>
+    <h1>Components demo</h1>
+
+    <p>Using components:</p>
+    <ul>
+        <li>The outer document should have no access to the elements of the component</li>
+        <li>The component should never access the outer document</li>
+    </ul>
+
+    <course-info></course-info>
+
+    <course-info></course-info>
+
+    <course-info></course-info>
+
+    <p>A component should be isolated from the main document, both
+        CSS and JavaScript.</p>
+</body>
+</html>

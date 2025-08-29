@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+    <meta name="Author" content="Bjarte Wang-Kileng" />
+    <link rel="shortcut icon" href="#">
+    <title>Isolating component with shadow DOM</title>
+    <link href="../main.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        /* Problem:
+   - This CSS will act only on the outer document, not inside the component
+   - Need to have CSS also for the component elements */
+
+        course-info {
+            border: 2px solid green;
+            padding: 5px;
+            margin: 10px 0;
+        }
+
+        p {
+            color: green;
+        }
+    </style>
+    <script src="components/courseinfo/courseinfo.js" type='module'></script>
+
+    <script src="js/l2_outer.js" defer></script>
+
+</head>
+
+<body>
+    <h1>Isolating component with shadow DOM</h1>
+
+    <p>This demonstration will show how to make a component with
+        HTML, CSS and JavaScript.</p>
+
+    <course-info></course-info>
+
+    <p>A component should be isolated from the main document, both
+        CSS and JavaScript, and should be loaded into the document using
+        a single entry point.</p>
+
+    <p><button type="button" data-p>Change colour of P-elements</button><button type="button" data-all>Change colour of all tags</button></p>
+</body>
+
+</html>

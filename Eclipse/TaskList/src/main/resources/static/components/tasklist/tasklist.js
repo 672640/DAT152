@@ -85,10 +85,33 @@ class TaskList extends HTMLElement {
         /**
          * Fill inn the code
          */
+        const container = this.shadowRoot.getElementById("tasklist");
+        
         if(!this._table) {
+            this._table = tasktable.content.cloneNode(true).querySelector("table");
+            container.appendChild(this._table);
             
-        }
+        const row = taskrow.content.cloneNode(true).querySelector("tr");
 
+        row.querySelectorAll("td")[0].textContent = task.title;
+        row.querySelectorAll("td")[1].textContent = task.status;
+        
+        const select = row.querySelector("select");
+        select.innerHTML = `<option value = "0" selected>&lt;Modify&gt;</option>`;
+        for(const status of this._statuses) {
+            const option = document.createElement("option");
+            option.value = document.createElement("option");
+            option.value = status;
+            option.textContent = status;
+            if(status === task.status) option.selected = true;
+            select.appendChild(option);
+
+        const tbody = this._table.querySelector("tbody");
+        tbody.insertBefore(row, tbody.firstChild);
+
+        this._tasks.push(task);
+        }
+        }
     }
 
     /**
