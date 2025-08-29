@@ -49,9 +49,11 @@ class TaskList extends HTMLElement {
      * @param {Array} list with all possible task statuses
      */
     setStatuseslist(allstatuses) {
+
         /**
          * Fill inn the code
          */
+		this._statuses = Array.isArray(allstatuses) ? allstatuses : [];
     }
 
     /**
@@ -63,6 +65,9 @@ class TaskList extends HTMLElement {
         /**
          * Fill inn the code
          */
+
+        this._changestatusCallback = callback;
+    
     }
 
     /**
@@ -74,6 +79,8 @@ class TaskList extends HTMLElement {
         /**
          * Fill inn the code
          */
+
+        this._deletetaskCallback = callback;
     }
 
     /**
@@ -90,28 +97,45 @@ class TaskList extends HTMLElement {
         if(!this._table) {
             this._table = tasktable.content.cloneNode(true).querySelector("table");
             container.appendChild(this._table);
-            
+        }
         const row = taskrow.content.cloneNode(true).querySelector("tr");
+        row.dataset.taskId = task.id;
 
         row.querySelectorAll("td")[0].textContent = task.title;
         row.querySelectorAll("td")[1].textContent = task.status;
         
         const select = row.querySelector("select");
-        select.innerHTML = `<option value = "0" selected>&lt;Modify&gt;</option>`;
+        select.innerHTML = "";
         for(const status of this._statuses) {
             const option = document.createElement("option");
-            option.value = document.createElement("option");
             option.value = status;
             option.textContent = status;
             if(status === task.status) option.selected = true;
             select.appendChild(option);
+        }
+        select.addEventListener("change", (e) => {
+            const newStatus = e.target.value;
+            if(this._changestatusCallback) {
+                this._changestatusCallback({
+                    id: task.id,
+                    status: newStatus
+                });
+            }
+            row.querySelectorAll("td")[1].textContent = newStatus;
+        });
+
+        const removeBtn = row.querySelector("button");
+        removeBtn.addEventListener("click", () => {
+            if(this._deletetaskCallback) {
+                this._deletetaskCallback(task.id);
+            }
+            this.removeTask(task.id);
+        });
 
         const tbody = this._table.querySelector("tbody");
         tbody.insertBefore(row, tbody.firstChild);
 
-        this._tasks.push(task);
-        }
-        }
+        this._tasks.unshift(task);
     }
 
     /**
@@ -122,6 +146,29 @@ class TaskList extends HTMLElement {
         /**
          * Fill inn the code
          */
+        const tbody = this._table ? this._table.querySelector("tbody") : null;
+        if(!tbody) {
+            return;
+        }
+
+        const row = Array.from(tbody.children).find(tr => tr.dataset.taskId == task.id);
+        if(!row) {
+            return;
+        }
+
+        row.querySelectorAll("td")[1].textContent = task.status;
+
+        const select = row.querySelector("select");
+        if(select) {
+            for(const option of select.options) {
+                option.selected = option.value === task.status;
+            }
+        }
+
+        const idx = this._tasks.findIndex(t => t.id == task.id);
+        if(idx !== -1) {
+            this._tasks[idx].status = task.status;
+        }
     }
 
     /**
@@ -132,6 +179,17 @@ class TaskList extends HTMLElement {
         /**
          * Fill inn the code
          */
+        const tbody = this._table ? this._table.querySelector("tbody") : null;
+        if(!tbody) {
+            return;
+        }
+
+        const row = Array.from(tbody.children).find(tr => tr.dataset.taskId == id);
+        if(row) {
+            tbody.removeChild(row);
+        }
+
+        this._tasks = this._tasks.filter(t => t.id != id);
     }
 
     /**
@@ -142,6 +200,7 @@ class TaskList extends HTMLElement {
         /**
          * Fill inn the code
          */
+        return this._tasks.length;
     }
 }
 customElements.define('task-list', TaskList);
