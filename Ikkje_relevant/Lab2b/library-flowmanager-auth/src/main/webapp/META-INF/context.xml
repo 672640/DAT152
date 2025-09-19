@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context>         
+   <Resource name="jdbc/DAT152" auth="Container"
+       type="javax.sql.DataSource" 
+       username="dat152" password="jGt3eRf"
+       driverClassName="org.apache.derby.iapi.jdbc.AutoloadedDriver"
+       factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+       url="jdbc:derby:memory:DAT152;create=true"
+       />
+</Context>

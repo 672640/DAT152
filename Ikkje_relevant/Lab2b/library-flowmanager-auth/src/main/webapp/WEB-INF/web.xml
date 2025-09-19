@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" id="WebApp_ID" version="6.0">
+  <display-name>library</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>FrontController</display-name>
+    <servlet-name>FrontController</servlet-name>
+    <servlet-class>no.hvl.dat152.controller.FrontController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FrontController</servlet-name>
+    <url-pattern>/do/*</url-pattern>
+  </servlet-mapping>
+    <filter>
+    <display-name>AuthenticationFilter</display-name>
+    <filter-name>AuthenticationFilter</filter-name>
+    <filter-class>no.hvl.dat152.security.filters.AuthenticationFilter</filter-class>
+    <init-param>
+    	<param-name>excludeLogin</param-name>
+    	<!-- exclude the login form action to allow user authenticate -->
+    	<param-value>/login,/loginform</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>/do/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+    <filter>
+    <display-name>AuthorizationFilter</display-name>
+    <filter-name>AuthorizationFilter</filter-name>
+    <filter-class>no.hvl.dat152.security.filters.AuthorizationFilter</filter-class>
+    <init-param>
+    	<param-name>includes</param-name>
+    	<!-- included commands for authorization checks -->
+    	<param-value>addbook,addbookform,addauthor,addauthorform,deletebook,updatebook,updatebookform</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthorizationFilter</filter-name>
+    <url-pattern>/do/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+</web-app>
