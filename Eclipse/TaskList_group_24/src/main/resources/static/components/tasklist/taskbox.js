@@ -35,24 +35,54 @@ taskbox.show();
 class TaskBox extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
+        this.attachShadow({ mode: "open" });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.statuses = [];
+        this.callbacks = [];
+        this.dialog = this.shadowRoot.querySelector("dialog");
+        this.input = this.shadowRoot.querySelector("input");
+        this.select = this.shadowRoot.querySelector("select");
+        this.closeButton = this.shadowRoot.querySelector("span");
+        this.submitButton = this.shadowRoot.querySelector("button[type='submit']");
+        this.closeButton.addEventListener("click", () => this.close());
+        this.dialog.addEventListener("cancel", () => this.close());
+        this.submitButton.addEventListener("click", () => {
+            const title = this.input.value.trim();
+            const status = this.select.value;
+            if (title && status) {
+                const task = { title, status };
+                this.callbacks.forEach(callback => callback(task));
+            }
+        });
     }
 
     show() {
-
+        this.dialog.showModal();
+        this.input.value = "";
+        this.input.focus();
     }
 
     setStatuseslist(list) {
-
+        if (Array.isArray(list)) {
+            this.statuses = list;
+        } else this.statuses = [];
+        this.select.innerHTML = "";
+        for (const status of this.statuses) {
+            const option = document.createElement("option");
+            option.value = status;
+            option.textContent = status;
+            this.select.appendChild(option);
+        }
     }
 
     addNewtaskCallback(callback) {
-
+        if (typeof callback === "function") {
+            this.callbacks.push(callback);
+        }
     }
 
     close() {
-
+        this.dialog.close();
     }
 }
 

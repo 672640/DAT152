@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\main",
+    "\\src\\main\\resources",
+    "\\src\\main\\resources\\static",
+    "\\src\\main\\resources\\static\\components",
+    "\\src\\main\\resources\\static\\components\\tasklist"
+  ],
+  "SelectedNode": "\\src\\main\\resources\\static\\components\\tasklist\\taskbox.js",
+  "PreviewInSolutionExplorer": false
+}
