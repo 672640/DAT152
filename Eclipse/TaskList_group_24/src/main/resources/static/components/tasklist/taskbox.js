@@ -17,20 +17,11 @@ template.innerHTML = `
     </dialog>
 `;
 
-const taskbox = document.querySelector("TASK-BOX");
-taskbox.newtaskCallback(
-    (task) => {
-        console.log(`Have '${task.title}' with status ${task.status}.`);
-        taskbox.close();
-    }
-);
-taskbox.setStatuseslist(["WATING","ACTIVE","DONE"]);
-taskbox.show();
-
-//show() - Opens/shows the modal box in the browser window.
-//setStatuseslist(list) - Sets the list of possible task statuses.
-//addNewtaskCallback(callback) - Adds a callback to run at click on the Add task button. When TaskBox runs a method set with this, the method must be run with the new task as parameter.
-//close() - Removes the modal box from the view.
+/**
+ * TaskBox-komponenten
+ * Held styr på ein modal-dialog for laging av nye tasks
+ * Gir oss form-grensesnittet med tittel-inputt og status-dropdown
+ */
 
 class TaskBox extends HTMLElement {
     constructor() {
@@ -56,12 +47,29 @@ class TaskBox extends HTMLElement {
         });
     }
 
+    /**
+	 * Opnar modaldialogen for brukarinputt
+     * @public
+     * @description Viser task creation form, slettar tidlegare inputt og fokuserer tittelfeltet
+     * @example
+     * const taskBox = document.querySelector('task-box');
+     * taskBox.show(); // Opnar modal-en
+     */
     show() {
         this.dialog.showModal();
         this.input.value = "";
         this.input.focus();
     }
 
+    /**
+	 * Set lista av tilgjengelege task-statusar og fyllar dropdown-menyen
+     * @public
+     * @param {Array<string>} list - Array med statusstrengar (["WAITING", "ACTIVE", "DONE"])
+     * @description Oppdaterer status-dropdown-menyen med den gitte lista av statusar. Viss inputten ikkje er ein array, så set vi det til å bli ein tom array i staden for.
+     * @example
+     * const taskBox = document.querySelector('task-box');
+     * taskBox.setStatuseslist(["WAITING", "ACTIVE", "DONE"]);
+     */
     setStatuseslist(list) {
         if (Array.isArray(list)) {
             this.statuses = list;
@@ -75,12 +83,34 @@ class TaskBox extends HTMLElement {
         }
     }
 
+    /**
+	 * Registrerer ein callback-funksjon som blir utført når ein ny task har blitt laga.
+     * @public
+     * @param {Function} callback - Funksjonen vi kallar når "Add task"-knappen har blitt klikka.
+     * @param {Object} callback.task - Taskobjekt sendt til callback-en
+     * @param {string} callback.task.title - Task-feltet frå inputfeltet
+     * @param {string} callback.task.status - Den valde statusen frå dropdown-menyen
+     * @description Legg til ein callback-funksjon til lista av funksjonar som blir kalla når brukaren legg til ein ny task. Callback-en får eit task-objekt med tittel og statuseigenskapar.
+     * @example
+     * const taskBox = document.querySelector('task-box');
+     * taskBox.addNewtaskCallback((task) => {
+     *     console.log(`New task: ${task.title} with status ${task.status}`);
+     * });
+     */
     addNewtaskCallback(callback) {
         if (typeof callback === "function") {
             this.callbacks.push(callback);
         }
     }
 
+    /**
+	 * Lukkar igjen modal-dialogen
+     * @public
+     * @description Lukkar modal-dialog-boksen ved å enten trykke på x-en, bruke escape eller kalle denne metoden programmatisk.
+     * @example
+     * const taskBox = document.querySelector('task-box');
+     * taskBox.close(); // Closes the modal
+     */
     close() {
         this.dialog.close();
     }

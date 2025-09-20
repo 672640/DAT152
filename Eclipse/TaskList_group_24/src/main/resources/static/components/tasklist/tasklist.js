@@ -187,9 +187,5 @@ class TaskList extends HTMLElement {
     getNumtasks() {
         return this._tasks.length;
     }
-
-    addNewtaskCallback() {
-        
-    }
 }
 customElements.define('task-list', TaskList);

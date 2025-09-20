@@ -1,15 +1,12 @@
 /**
- * For testing the functionality of taskview.js
+ * Code below can be used to test the functionality of TaskList
  */
 
-class TaskViewDemo {
-/**
+class TaskDemo {
     #tasklist
-    #taskview
 
     constructor() {
-        this.#taskview = document.querySelector("task-view");
-        this.#tasklist = this.#taskview.shadowRoot.querySelector("task-list");
+        this.#tasklist = document.querySelector("task-list");
 
         this.#tasklist.addChangestatusCallback(
             (id, newStatus) => {
@@ -25,6 +22,7 @@ class TaskViewDemo {
 
         const allstatuses = ["WAITING", "ACTIVE", "DONE"];
         this.#tasklist.setStatuseslist(allstatuses);
+
         const tasks = [
             {
                 id: 1,
@@ -39,7 +37,7 @@ class TaskViewDemo {
             {
                 id: 3,
                 status: "DONE",
-                title: "Wash floor"
+                title: "Wash flooer"
             }
         ];
 
@@ -68,14 +66,9 @@ class TaskViewDemo {
     removetask(id) {
         this.#tasklist.removeTask(id);
     }
-        */
 }
 
-//window.addEventListener('DOMContentLoaded', () => {
-/**
-const demo = new TaskViewDemo();
+const demo = new TaskDemo();
 demo.changestatus(1, "ACTIVE");
 demo.newtask(5,"Do DAT152 home work","ACTIVE");
 demo.removetask(1) ;
-//});
-*/
