@@ -82,9 +82,13 @@ public class BookService {
 	public void deleteBookById(long id) throws BookNotFoundException {
 		
 		// TODO
-
+		if(bookRepository.findById(id) == null) {
+			bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book with id = "+id+" not found!"));
+		} else {
+			bookRepository.deleteById(id);
+		}
 	}
-	
+
 	private Book findBookById(long id) throws BookNotFoundException {
 		
 		Book book = bookRepository.findById(id)

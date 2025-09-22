@@ -20,9 +20,11 @@ public class AuthorService {
 	@Autowired
 	private AuthorRepository authorRepository;
 	
-	
 	// TODO : saveAuthor(Author author)
 
+	public Author saveAuthor(Author author) {
+		return authorRepository.save(author);
+	}
 	
 	public List<Author> findAll(){
 		

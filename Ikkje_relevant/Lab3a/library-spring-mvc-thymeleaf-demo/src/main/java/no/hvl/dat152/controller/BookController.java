@@ -77,6 +77,18 @@ public class BookController {
 	}
 	
 	// TODO - deleteBook()
+	@GetMapping("/viewbooks")
+	public String deleteBook(@RequestParam long id, Model model) {
+		try {
+			bookService.deleteBookById(id);
+		} catch (BookNotFoundException e) {
+			e.printStackTrace();
+		}
+		List<Book> books = bookService.findAll();
+		model.addAttribute("books", books);
+		return "viewbooks";
+		
+	}
 	
 	@GetMapping("/updatebook")
 	public String updateBook(@RequestParam Long id, Model model) throws BookNotFoundException {
