@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="library-spring-ws-rest/src/main/java"/>
+	<classpathentry kind="src" path="library-spring-ws-rest/src/test/java"/>
+	<classpathentry kind="lib" path="__MACOSX/library-spring-ws-rest/.mvn/wrapper/._maven-wrapper.jar"/>
+	<classpathentry kind="lib" path="__MACOSX/library-spring-ws-rest/target/._demo-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="library-spring-ws-rest/.mvn/wrapper/maven-wrapper.jar"/>
+	<classpathentry kind="lib" path="library-spring-ws-rest/target/demo-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="library-spring-ws-rest/target/classes"/>
+</classpath>

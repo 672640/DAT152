@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\vladd\\OneDrive\\Documents\\GitHub\\DAT152\\Eclipse\\TaskList_group_24\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\vladd\\OneDrive\\Documents\\GitHub\\DAT152\\Eclipse\\TaskList_group_24\\src\\main\\resources\\static\\components\\tasklist\\taskbox.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\main\\resources\\static\\components\\tasklist\\taskbox.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "taskbox.js",
+              "DocumentMoniker": "C:\\Users\\vladd\\OneDrive\\Documents\\GitHub\\DAT152\\Eclipse\\TaskList_group_24\\src\\main\\resources\\static\\components\\tasklist\\taskbox.js",
+              "RelativeDocumentMoniker": "src\\main\\resources\\static\\components\\tasklist\\taskbox.js",
+              "ToolTip": "C:\\Users\\vladd\\OneDrive\\Documents\\GitHub\\DAT152\\Eclipse\\TaskList_group_24\\src\\main\\resources\\static\\components\\tasklist\\taskbox.js",
+              "RelativeToolTip": "src\\main\\resources\\static\\components\\tasklist\\taskbox.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-09-20T10:05:32.231Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
