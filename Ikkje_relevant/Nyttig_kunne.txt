@@ -1,0 +1,5 @@
+Resource Modeling & REST API design
+	Resource must have a name:
+		Plural noun for collection (e.g. /customers)
+		Singular noun for document (e.g. /customers/customer
+		Verb for controller (e.g. /alerts/245743/resend
