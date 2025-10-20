@@ -22,27 +22,37 @@ template.innerHTML = `
  * Held styr på ein modal-dialog for laging av nye tasks
  * Gir oss form-grensesnittet med tittel-inputt og status-dropdown
  */
-
-class TaskBox extends HTMLElement {
+//export... export-ar taskbox
+export class TaskBox extends HTMLElement {
+//Endra alle metodane til å bli private, bortsett frå show, setStatusesList, addNewtaskCallback og close.
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this.statuses = [];
-        this.callbacks = [];
-        this.dialog = this.shadowRoot.querySelector("dialog");
-        this.input = this.shadowRoot.querySelector("input");
-        this.select = this.shadowRoot.querySelector("select");
-        this.closeButton = this.shadowRoot.querySelector("span");
-        this.submitButton = this.shadowRoot.querySelector("button[type='submit']");
-        this.closeButton.addEventListener("click", () => this.close());
-        this.dialog.addEventListener("cancel", () => this.close());
-        this.submitButton.addEventListener("click", () => {
-            const title = this.input.value.trim();
-            const status = this.select.value;
-            if (title && status) {
+/**Gjeld for tasklist og taskview også:
+ * Når vi endrar attachShadow til "closed", så kan ikkje vi bruke this.shadowRoot lenger.
+ * Den enklaste løysinga var å lagre shadowRoot i ein privat "shadow" variabel.
+ * Nå som den er closed, så kan vi bruke shadow kor vi vil hen, mens shadowRoot ikkje er sett.
+ * Nå kan ikkje komponent få tilgong til innsida av attachShadow gjennom shadowRoot-property-en
+ */
+
+//Generelt for alle: La til sikrare booleanslogikk.
+
+        this._shadow = this.attachShadow({ mode: "closed" });
+        this._shadow.appendChild(template.content.cloneNode(true));
+        this._statuses = [];
+        this._callbacks = [];
+        this._dialog = this._shadow.querySelector("dialog");
+        this._input = this._shadow.querySelector("input");
+        this._select = this._shadow.querySelector("select");
+        this._closeButton = this._shadow.querySelector("span");
+        this._submitButton = this._shadow.querySelector("button[type='submit']");
+        this._closeButton.addEventListener("click", () => this.close());
+        this._dialog.addEventListener("cancel", () => this.close());
+        this._submitButton.addEventListener("click", () => {
+            const title = this._input.value.trim();
+            const status = this._select.value;
+            if (title != null && status != null) {
                 const task = { title, status };
-                this.callbacks.forEach(callback => callback(task));
+                this._callbacks.forEach(callback => callback(task));
             }
         });
     }
@@ -52,9 +62,9 @@ class TaskBox extends HTMLElement {
      * @description Viser task creation form, slettar tidlegare inputt og fokuserer tittelfeltet
      */
     show() {
-        this.dialog.showModal();
-        this.input.value = "";
-        this.input.focus();
+        this._dialog.showModal();
+        this._input.value = "";
+        this._input.focus();
     }
 
     /**
@@ -62,16 +72,26 @@ class TaskBox extends HTMLElement {
      * @param {Array<string>} list - Array med statusstrengar (["WAITING", "ACTIVE", "DONE"])
      * @description Oppdaterer status-dropdown-menyen med den gitte lista av statusar. Viss inputten ikkje er ein array, så set vi det til å bli ein tom array i staden for.
      */
+/*Gjeld for alt som brukte/bruker innerHTML:
+	Vi bruker innerHTML på metodar som klargjer eksisterande innhald, som select.innerHTML = "", sidan det er noko brukaren ikkje har
+	tilgong til og kan endre på, så det er ingen risiko for XSS-angrep.
+	Resten endra vi til innerText, sidan dei metodane skal sette inn rein tekst, som p.innerText = `Found ${numTasks} tasks.`;. Dette kan ha
+	XSS-angrepsrisiko, sidan det er ting brukaren kan endre på. Vi måtte også endre litt på korleis vi handterte <p></p>, sidan innerText berre
+	returnerer rein tekst, der <p> blir returnert som <p> og lagar ikkje eit paragraf. Det fiksa vi med f.eks.:
+	const p = document.createElement("p");
+	p.innerText = `Found ${numTasks} tasks.`;
+	this._messageDiv.appendChild(p);
+*/
     setStatuseslist(list) {
-        if (Array.isArray(list)) {
-            this.statuses = list;
-        } else this.statuses = [];
-        this.select.innerHTML = "";
-        for (const status of this.statuses) {
+        if (Array.isArray(list) != null) {
+            this._statuses = list;
+        } else this._statuses = [];
+        this._select.innerHTML = "";
+        for (const status of this._statuses) {
             const option = document.createElement("option");
             option.value = status;
             option.textContent = status;
-            this.select.appendChild(option);
+            this._select.appendChild(option);
         }
     }
 
@@ -84,8 +104,8 @@ class TaskBox extends HTMLElement {
      * @description Legg til ein callback-funksjon til lista av funksjonar som blir kalla når brukaren legg til ein ny task. Callback-en får eit task-objekt med tittel og statuseigenskapar.
      */
     addNewtaskCallback(callback) {
-        if (typeof callback === "function") {
-            this.callbacks.push(callback);
+        if (typeof callback === "function" && typeof callback != null) {
+            this._callbacks.push(callback);
         }
     }
 
@@ -94,7 +114,7 @@ class TaskBox extends HTMLElement {
      * @public
      */
     close() {
-        this.dialog.close();
+        this._dialog.close();
     }
 }
 

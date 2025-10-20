@@ -28,16 +28,18 @@ taskrow.innerHTML = `
   * TaskList
   * Manage view with list of tasks
   */
-class TaskList extends HTMLElement {
 
+//export... export-ar tasklist
+export class TaskList extends HTMLElement {
+//Gjeld for alle: Endra alle metodane til private, bortsett frå showTask, updateTask, removeTask, setStatuseslist, addChangestatusCallback, addDeletetaskCallback and getNumtasks.
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this._shadow = this.attachShadow({ mode: "closed" });
+        this._shadow.appendChild(template.content.cloneNode(true));
+		this._container = this._shadow.getElementById("tasklist");
         this._statuses = [];
-        this._addChangestatusCallback = null;
-        this._addDeletetaskCallback = null;
-        this._tasks = [];
+        this._changestatusCallback = null;
+        this._deletetaskCallback = null;
         this._table = null;
 
     }
@@ -48,7 +50,7 @@ class TaskList extends HTMLElement {
      */
     setStatuseslist(allstatuses) {
 
-		if(Array.isArray(allstatuses)) {
+		if(Array.isArray(allstatuses) != null) {
             this._statuses = allstatuses;
         } else {
             this._statuses = [];
@@ -62,7 +64,7 @@ class TaskList extends HTMLElement {
      */
     addChangestatusCallback(callback) {
 
-        this._addChangestatusCallback = callback;
+        this._changestatusCallback = callback;
     
     }
 
@@ -73,7 +75,7 @@ class TaskList extends HTMLElement {
      */
     addDeletetaskCallback(callback) {
 
-        this._addDeletetaskCallback = callback;
+        this._deletetaskCallback = callback;
     }
 
     /**
@@ -82,51 +84,50 @@ class TaskList extends HTMLElement {
      * @param {Object} task - Object representing a task
      */
     showTask(task) {
-
-        const container = this.shadowRoot.getElementById("tasklist");
         
-        if(!this._table) {
+		
+        if(this._table == null) {
             this._table = tasktable.content.cloneNode(true).querySelector("table");
-            container.appendChild(this._table);
+            this._container.appendChild(this._table);
         }
+		
         const row = taskrow.content.cloneNode(true).querySelector("tr");
         row.dataset.taskId = task.id;
 
-        row.querySelectorAll("td")[0].textContent = task.title;
-        row.querySelectorAll("td")[1].textContent = task.status;
-        
-        const select = row.querySelector("select");
+		row.cells[0].innerText = task.title;
+		row.cells[1].innerText = task.status;
+        const select = row.cells[2].querySelector("select");
+//Ryddar opp dropdownmenyen før vi legg til <options>-elementa.
+//Verdiane kjem frå this._statuses, kontrollert av appen, ikkje brukardata.
+//Endra mange metodar frå å bruke querySelector til å bruke f.eks. row.cells[0].innerText = task.title;, som skal vere raskare.
         select.innerHTML = "";
         for(const status of this._statuses) {
             const option = document.createElement("option");
             option.value = status;
-            option.textContent = status;
-            if(status === task.status) option.selected = true;
+            option.innerText = status;
+            if(status === task.status && status != null) option.selected = true;
             select.appendChild(option);
         }
         select.addEventListener("change", (e) => {
             const newStatus = e.target.value;
-            if(this._addChangestatusCallback) {
-                this._addChangestatusCallback({
+            if(this._changestatusCallback != null) {
+                this._changestatusCallback({
                     id: task.id,
                     status: newStatus
                 });
             }
-            row.querySelectorAll("td")[1].textContent = newStatus;
+            row.cells[1].innerText = newStatus;
         });
 
         const removeBtn = row.querySelector("button");
         removeBtn.addEventListener("click", () => {
-            if(this._addDeletetaskCallback) {
-                this._addDeletetaskCallback(task.id);
+            if(this._deletetaskCallback != null) {
+                this._deletetaskCallback(task.id);
             }
             this.removeTask(task.id);
         });
 
-        const tbody = this._table.querySelector("tbody");
-        tbody.insertBefore(row, tbody.firstChild);
-
-        this._tasks.unshift(task);
+         this._table.querySelector("tbody").insertBefore(row, this._table.querySelector("tbody").firstChild);
     }
 
     /**
@@ -137,47 +138,63 @@ class TaskList extends HTMLElement {
     //checks if this._table exists. If true, tries to find the <tbody> inside it using.
     //if false, sets tbody to null.
         const tbody = this._table ? this._table.querySelector("tbody") : null;
-        if(!tbody) {
+        if(tbody === null) {
+            return;
+        }
+//Endra denne og i removeTask(id) for å sleppe å gå gjennom alle radene for å finne ein gitt verdi av data-taskid.
+//Nå: bruker querySelector med ein attributt-selector i staden for, som er raskare.
+        const row = this._table.querySelector(`tr[data-taskid="${task.id}"]`);
+        if(row === null) {
             return;
         }
 
-        const row = Array.from(tbody.children).find(tr => tr.dataset.taskId == task.id);
-        if(!row) {
-            return;
-        }
-
-        row.querySelectorAll("td")[1].textContent = task.status;
+        row.querySelectorAll("td")[1].innerText = task.status;
 
         const select = row.querySelector("select");
-        if(select) {
+        if(select != null) {
             for(const option of select.options) {
                 option.selected = option.value === task.status;
             }
         }
-
-        const idx = this._tasks.findIndex(t => t.id == task.id);
-        if(idx !== -1) {
-            this._tasks[idx].status = task.status;
-        }
     }
+/*Lagrar ikkje tasksa i ein Javascript-array/map:
+Fjerna: this._tasks = [];, this._tasks.unshift(task);,
 
+const idx = this._tasks.findIndex(t => t.id == task.id);
+if(idx !== -1) {
+    this._tasks[idx].status = task.status;
+}
+, og this._tasks = this._tasks.filter(t => t.id != id);.
+
+Endra:
+
+getNumtasks() {
+    return this._tasks.length;
+}
+
+til:
+
+getNumtasks() {
+    if(!this._table) return 0;
+    const tbody = this._table.querySelector("tbody");
+    return tbody ? tbody.rows.length : 0;
+}
+
+Dette gjer at vi tel tasksa direkte frå table-radene, sidan alle tasksa er tilgjengelege der.
+*/
     /**
      * Remove a task from the view
      * @param {Integer} task - ID of task to remove
      */
     removeTask(id) {
 
-        const tbody = this._table ? this._table.querySelector("tbody") : null;
-        if(!tbody) {
-            return;
-        }
-
-        const row = Array.from(tbody.children).find(tr => tr.dataset.taskId == id);
-        if(row) {
-            tbody.removeChild(row);
-        }
-
-        this._tasks = this._tasks.filter(t => t.id != id);
+		const tbody = (this._table !== null)
+		    ? this._table.querySelector("tbody")
+		    : null;
+		
+        const row = (this._table !== null)
+		? this._table.querySelector(`tr[data-taskid="${id}"]`)
+		: null;
     }
 
     /**
@@ -185,7 +202,8 @@ class TaskList extends HTMLElement {
      * @return {Number} - Number of tasks on display in view
      */
     getNumtasks() {
-        return this._tasks.length;
+		if (this._table == null || this._table.tBodies[0] == null) return 0;
+		return this._table.tBodies[0].rows.length;
     }
 }
 customElements.define('task-list', TaskList);

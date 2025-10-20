@@ -4,11 +4,9 @@
 
 <head>
     <link rel="shortcut icon" href="#">
-    <script defer src="./components/tasklist/tasklist.js" type="module"></script>
-    <script defer src="./components/tasklist/taskbox.js" type="module"></script>
-    <script defer src="./components/tasklist/taskview.js" type="module"></script>
-    <script defer src="js/taskviewdemo.js"></script>
-
+<!--Tok vekk "defer", trengde ikkje den.
+Bruker éit script-tag for taskview, mens taskbox og task taskview handterer dependeciesa sjølv ved bruk av imports-->
+    <script src="./components/tasklist/taskview.js" type="module"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="Author" content="Bjarte Wang-Kileng">
 

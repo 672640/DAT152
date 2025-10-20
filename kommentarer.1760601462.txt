@@ -1,0 +1,72 @@
+This is not good enough. I let it pass, but at the oral demonstration you must
+be able to provide solutions to all the problems listed below.
+See the comments below.
+
+####################
+--There should be only a single script tag in the file index.html The modules should manage the dependecies themselves using import. That is, only taskview.js should be loaded by index.html.
+
+--No need to use defer with script tag if type="module".
+
+-- (duplikat) Why do you load the JavaScript file "tasklist.js" from the index file? The only JavaScript file to load should be the module for TaskView.
+
+-- (duplikat) Why do you load the JavaScript file "taskbox.js" from the index file? The only JavaScript file to load should be the module for TaskView.
+
+--Use mode "closed" with attachShadow. If open, the inside of the component is accessible from other components through the shadowRoot property.
+
+--Be careful with innerHTML and insertAdjacentHTML. You are using innerHTML or insertAdjacentHTML on data the originates elsewhere. Only use innerHTML on data that you control yourself, or the application becomes vulnerable to XSS attacs.
+
+--You are using innerHTML to insert pure text. Use e.g. innerText to insert pure text.
+
+--There is no need of a JavaScript array or map to store the tasks as all taks are available from the HTML TABLE rows.
+
+--There is no need to iterate through all rows to find row with a given value of data-taskid. Better use something similar to the below code:
+--const row = this.taskListContainer.querySelector(`tr[data-taskid="${taskid}"]`)
+
+
+--Properties like table.tBodies[0].rows are faster than using querySelector/querySelectorAll.
+
+--You are using public fields and methods that should have been private.
+--There should be no public fields in any of the component classes.
+--The only public methods of TaskList should be showTask, updateTask, removeTask, setStatuseslist, addChangestatusCallback, addDeletetaskCallback and getNumtasks.
+--All methods of TaskView should be private.
+--The only public methods of TaskBox should be show, setStatuseslist, addNewtaskCallback and close.
+
+--Do use "#" for private class members. Modern browsers support using # to declare class fields and methods as private. Member names that start with "_" are public.
+--The character "_" does not make it private, but is used by convention to tell that this member should be considered private for browsers that do not support "#".
+
+--The character "_" can be used for backward compablity with old browsers, but then shadow DOM can be problematic.
+
+--Use operators in a boolean context to avoid problems.
+--Example on what to avoid:
+    --if (this.querySelector("table")) { ... }
+--Rather, use:
+    --if (this.querySelector("table") !== null) { ... }
+
+In a boolean context, undefined, 0, Null, an empty text will all
+evaluate to false. Without an operator, a misprint in the expression
+can therefore be difficult to find, and can give unexpected results.
+
+Why do you "await" a method that does not return a Promise?
+
+Using "await" on something that is not a Promise shows that you have not understood the consept Promise.
+
+If "await", and no promise, the browser will encapsulate the return value in a Promise that resolves immediately.
+
+If no connection with the database, the button "New task" should remain disabled. In your application, the button is enabled also if the back end does not respond to the ajax calls.
+
+If no tasks in the database when the application starts, application shows an error in the browser console.
+
+The TaskBox dialog window does not close when user clicks the button "Add task".
+
+No confirmation window when deleting task.
+
+The SELECT element for modifying the task status does not work as intended.  The status shown on the SELECT element is not <Modify> or is not reset to <Modify>.
+
+No confirmation window when updating task status.
+
+You have problems with synchronization in your solution.
+A task can be removed from the view even if the back end does not respond to the ajax calls.
+
+You have problems with synchronization in your solution.
+The status of a task can be changed in the view if the back end does not respond to the ajax calls.
+
