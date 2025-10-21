@@ -29,9 +29,8 @@ taskrow.innerHTML = `
   * Manage view with list of tasks
   */
 
-//export... export-ar tasklist
+//Export-ar tasklist
 export class TaskList extends HTMLElement {
-//Gjeld for alle: Endra alle metodane til private, bortsett frå showTask, updateTask, removeTask, setStatuseslist, addChangestatusCallback, addDeletetaskCallback and getNumtasks.
     constructor() {
         super();
         this._shadow = this.attachShadow({ mode: "closed" });
@@ -50,7 +49,7 @@ export class TaskList extends HTMLElement {
      */
     setStatuseslist(allstatuses) {
 
-		if(Array.isArray(allstatuses) != null) {
+		if(Array.isArray(allstatuses) === true) {
             this._statuses = allstatuses;
         } else {
             this._statuses = [];
@@ -86,7 +85,7 @@ export class TaskList extends HTMLElement {
     showTask(task) {
         
 		
-        if(this._table == null) {
+        if(!this._table) {
             this._table = tasktable.content.cloneNode(true).querySelector("table");
             this._container.appendChild(this._table);
         }
@@ -99,15 +98,10 @@ export class TaskList extends HTMLElement {
         const select = row.cells[2].querySelector("select");
 //Ryddar opp dropdownmenyen før vi legg til <options>-elementa.
 //Verdiane kjem frå this._statuses, kontrollert av appen, ikkje brukardata.
-//Endra mange metodar frå å bruke querySelector til å bruke f.eks. row.cells[0].innerText = task.title;, som skal vere raskare.
         select.innerHTML = "";
-		//Viser <modify> først.
-		const modifyOption = document.createElement("option");
-		modifyOption.value = "0";
-		modifyOption.innerText = "<modify>";
-		modifyOption.selected = true; //Viser <modify> som default.
-		select.appendChild(modifyOption);
-		
+		const modifyOptionTemplate = taskrow.content.querySelector("option").cloneNode(true);
+		select.appendChild(modifyOptionTemplate);
+
 		//Legg til statusane etterpå
         for(const status of this._statuses) {
             const option = document.createElement("option");
@@ -115,14 +109,17 @@ export class TaskList extends HTMLElement {
             option.innerText = status;
             select.appendChild(option);
         }
-		//Tilbakestillar til <modify> etter ei endring.
+		//Tilbakestillar til <Modify> etter ei endring.
         select.addEventListener("change", (e) => {
 			//Confirmation window når vi prøver å oppdatere ein task.
 			const confirmationUpdate = window.confirm(`Are you sure you want to update the task "${task.title}"?`);
-			if(!confirmationUpdate) return;
-			
+			if(!confirmationUpdate) {
+                e.target.value = "0";
+                return;
+            };
+
             const newStatus = e.target.value;
-			//Når brukaren berre trykkar på "<modify>".
+			//Når brukaren berre trykkar på "<Modify>".
 			if(newStatus === "0") return;
 			//Sendar event til TaskView men oppdaterer ikkje dei ennå.
             if(this._changestatusCallback != null) {
@@ -131,12 +128,12 @@ export class TaskList extends HTMLElement {
                     status: newStatus
                 });
             }
-			//Tilbakestillar dropdown-en til "<modify>".
+			//Tilbakestillar dropdown-en til "<Modify>".
 			e.target.value = "0";
         });
 
         const removeBtn = row.querySelector("button");
-		
+
         removeBtn.addEventListener("click", () => {
 			//Confirmation window når vi prøver å slette ein task.
 			const confirmationDelete = window.confirm(`Are you sure you want to delete the task "${task.title}"?`);
@@ -157,14 +154,16 @@ export class TaskList extends HTMLElement {
     updateTask(task) {
     //checks if this._table exists. If true, tries to find the <tbody> inside it using.
     //if false, sets tbody to null.
-        const tbody = this._table ? this._table.querySelector("tbody") : null;
-        if(tbody === null) {
+        const tbody = (this._table !== null)
+            ? this._table.querySelector("tbody")
+            : null;
+            if(!tbody) {
             return;
         }
-//Endra denne og i removeTask(id) for å sleppe å gå gjennom alle radene for å finne ein gitt verdi av data-taskid.
-//Nå: bruker querySelector med ein attributt-selector i staden for, som er raskare.
+		//Endra denne og i removeTask(id) for å sleppe å gå gjennom alle radene for å finne ein gitt verdi av data-taskid.
+		//Nå: bruker querySelector med ein attributt-selector i staden for, som er raskare.
         const row = this._table.querySelector(`tr[data-task-id="${task.id}"]`);
-        if(row === null) {
+        if(!row) {
             return;
         }
 		
@@ -175,41 +174,16 @@ export class TaskList extends HTMLElement {
             for(const option of select.options) {
                 option.selected = option.value === task.status;
             }
-			//Gjer at <modify> blir reset-a riktig til <modify> etter vi har velt ein status.
+			//Gjer at <Modify> blir reset-a riktig til <Modify> etter vi har velt ein status.
 			select.value = "0";
         }
     }
-/*Lagrar ikkje tasksa i ein Javascript-array/map:
-Fjerna: this._tasks = [];, this._tasks.unshift(task);,
 
-const idx = this._tasks.findIndex(t => t.id == task.id);
-if(idx !== -1) {
-    this._tasks[idx].status = task.status;
-}
-, og this._tasks = this._tasks.filter(t => t.id != id);.
-
-Endra:
-
-getNumtasks() {
-    return this._tasks.length;
-}
-
-til:
-
-getNumtasks() {
-    if(!this._table) return 0;
-    const tbody = this._table.querySelector("tbody");
-    return tbody ? tbody.rows.length : 0;
-}
-
-Dette gjer at vi tel tasksa direkte frå table-radene, sidan alle tasksa er tilgjengelege der.
-*/
     /**
      * Remove a task from the view
      * @param {Integer} task - ID of task to remove
      */
     removeTask(id) {
-
 		const tbody = (this._table !== null)
 		    ? this._table.querySelector("tbody")
 		    : null;
@@ -220,6 +194,11 @@ Dette gjer at vi tel tasksa direkte frå table-radene, sidan alle tasksa er tilg
 		
 		if(row != null && tbody != null) {
 			tbody.removeChild(row);
+			
+			if(tbody.rows.length === 0) {
+				this._table.remove();
+				this._table = null;
+			}
 		}
     }
 
@@ -228,7 +207,7 @@ Dette gjer at vi tel tasksa direkte frå table-radene, sidan alle tasksa er tilg
      * @return {Number} - Number of tasks on display in view
      */
     getNumtasks() {
-		if (this._table == null || this._table.tBodies[0] == null) return 0;
+		if (!this._table || !this._table.tBodies[0]) return 0;
 		return this._table.tBodies[0].rows.length;
     }
 }

@@ -19,12 +19,10 @@ template.innerHTML = `
 
 /**
  * TaskBox-komponenten
- * Held styr på ein modal-dialog for laging av nye tasks
- * Gir oss form-grensesnittet med tittel-inputt og status-dropdown
+ * Viser fram modulen/boksen for å legge til nye tasks, samlar inn titlar/statusar og utfører ein callback når vi trykker på "Add Task"-knappen, gjer ikkje Ajax.
  */
-//export... export-ar taskbox
+//Export-ar taskbox
 export class TaskBox extends HTMLElement {
-//Endra alle metodane til å bli private, bortsett frå show, setStatusesList, addNewtaskCallback og close.
     constructor() {
         super();
 /**Gjeld for tasklist og taskview også:
@@ -33,8 +31,6 @@ export class TaskBox extends HTMLElement {
  * Nå som den er closed, så kan vi bruke shadow kor vi vil hen, mens shadowRoot ikkje er sett.
  * Nå kan ikkje komponent få tilgong til innsida av attachShadow gjennom shadowRoot-property-en
  */
-
-//Generelt for alle: La til sikrare booleanslogikk.
 
         this._shadow = this.attachShadow({ mode: "closed" });
         this._shadow.appendChild(template.content.cloneNode(true));
@@ -50,7 +46,7 @@ export class TaskBox extends HTMLElement {
         this._submitButton.addEventListener("click", () => {
             const title = this._input.value.trim();
             const status = this._select.value;
-            if (title !== "" && status !== "") {
+            if (title != "" && status != "") {
                 const task = { title, status };
                 this._callbacks.forEach(callback => callback(task));
 				//Lukkar igjen dialogboksen når vi legg til ein task.
@@ -74,15 +70,11 @@ export class TaskBox extends HTMLElement {
      * @param {Array<string>} list - Array med statusstrengar (["WAITING", "ACTIVE", "DONE"])
      * @description Oppdaterer status-dropdown-menyen med den gitte lista av statusar. Viss inputten ikkje er ein array, så set vi det til å bli ein tom array i staden for.
      */
-/*Gjeld for alt som brukte/bruker innerHTML:
+/*Gjeld for alt som bruker innerHTML:
 	Vi bruker innerHTML på metodar som klargjer eksisterande innhald, som select.innerHTML = "", sidan det er noko brukaren ikkje har
 	tilgong til og kan endre på, så det er ingen risiko for XSS-angrep.
 	Resten endra vi til innerText, sidan dei metodane skal sette inn rein tekst, som p.innerText = `Found ${numTasks} tasks.`;. Dette kan ha
-	XSS-angrepsrisiko, sidan det er ting brukaren kan endre på. Vi måtte også endre litt på korleis vi handterte <p></p>, sidan innerText berre
-	returnerer rein tekst, der <p> blir returnert som <p> og lagar ikkje eit paragraf. Det fiksa vi med f.eks.:
-	const p = document.createElement("p");
-	p.innerText = `Found ${numTasks} tasks.`;
-	this._messageDiv.appendChild(p);
+	XSS-angrepsrisiko viss vi bruker innerHTML på dei, sidan det er ting brukaren kan endre på.
 */
     setStatuseslist(list) {
         if (Array.isArray(list) === true) {

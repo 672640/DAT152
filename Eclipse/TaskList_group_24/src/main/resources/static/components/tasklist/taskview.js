@@ -1,4 +1,4 @@
-//import... importar taskbox og tasklist
+//Importar taskbox og tasklist
 import './taskbox.js';
 import './tasklist.js';
 
@@ -23,10 +23,10 @@ template.innerHTML = `
 
 /**
   * Taskview
-  * Koplar taskbox og tasklist saman med kvarandre.
+  * Tilretteleggar alt. Viser fram meldinga og "New Task"-knappen, set samen tasklist/taskbox callbacks og utfører all Ajax-en
+  * (henting av statusar/tasks, put/post/delete). Oppdaterer tasklist berre etter at serveren har suksessfullt svart.
   */
 class TaskView extends HTMLElement {
-//Endra alle metodane til å bli private.
     constructor() {
         super();
         this._shadow = this.attachShadow({ mode: "closed" });
@@ -42,6 +42,8 @@ class TaskView extends HTMLElement {
     /**
 	 * Blir kalla når elementet er kopla til DOM-en
 	 * Set opp callbacks og lastar inn den opprinnelege dataen frå serveren
+	 * Einaste metoden som er public. Må vere public, sidan nettlesaren kallar connectedCallback() automatisk når dei elementa er kopla til DOM-en.
+	 * Viss den er private, så kan ikkje nettlesaren kalle connectedCallback().
      */
     async connectedCallback() {
 		//Hentar fram service URL-en frå dataattributten
@@ -128,26 +130,28 @@ class TaskView extends HTMLElement {
                 this._fetchAllTasks()
             ]);
 
-            if (!statusesResponse || !statusesResponse.responseStatus || !tasksResponse || !tasksResponse.responseStatus) {
-				throw new Error("Invalid server response");
+            if(!statusesResponse || !statusesResponse.responseStatus) {
+                throw new Error("Invalid statuses data from server");
+            }
+
+            if (!tasksResponse || !tasksResponse.responseStatus || !Array.isArray(tasksResponse.tasks)) {
+				throw new Error("Invalid tasks data from server");
 				}
 				
-                this._taskListElem.setStatuseslist(statusesResponse.allstatuses);
-                this._taskBoxElem.setStatuseslist(statusesResponse.allstatuses);
-//Fail-check før looping, viss Array tom, viser "No tasks found."
-            if(Array.isArray(tasksResponse.tasks) !== null) {
-				for(const task of tasksResponse.tasks) {
-					this._taskListElem.showTask(task);
-				}
-			}
-//Backenden er OK, skrur på "New Task"-knappen
+            this._taskListElem.setStatuseslist(statusesResponse.allstatuses);
+            this._taskBoxElem.setStatuseslist(statusesResponse.allstatuses);
+			//Fail-check før looping, viss Array tom, viser "No tasks found."
+            for(const task of tasksResponse.tasks) {
+                this._taskListElem.showTask(task);
+            }
+			//Backenden er OK, skrur på "New Task"-knappen
 			this._newTaskButton.disabled = false;
 			this._tasksFound();
 
         } catch (error) {
             console.error('Failed to load initial data:', error);
             this._showErrorMessage('Failed to load data from server');
-//Lar "New Task"-knappen vere skrudd av.
+			//Lar "New Task"-knappen vere skrudd av.
 			this._newTaskButton.disabled = true;
         }
     }
@@ -239,6 +243,8 @@ class TaskView extends HTMLElement {
      */
     _tasksFound() {
 		this._messageDiv.innerHTML = "";
+		//Må handtere å legge til <p></p> på denne måten, sidan innerText berre
+		//returnerer rein tekst, der <p> blir returnert som <p> (rein tekst) og lagar ikkje eit paragraf.
 		const p = document.createElement("p");
         const numTasks = this._taskListElem.getNumtasks();
 
