@@ -42,31 +42,31 @@ See the comments below.
 --Rather, use:
     --if (this.querySelector("table") !== null) { ... }
 
-In a boolean context, undefined, 0, Null, an empty text will all
-evaluate to false. Without an operator, a misprint in the expression
-can therefore be difficult to find, and can give unexpected results.
+--In a boolean context, undefined, 0, Null, an empty text will all
+--evaluate to false. Without an operator, a misprint in the expression
+--can therefore be difficult to find, and can give unexpected results.
 
-Why do you "await" a method that does not return a Promise?
+--Why do you "await" a method that does not return a Promise?
 
-Using "await" on something that is not a Promise shows that you have not understood the consept Promise.
+--Using "await" on something that is not a Promise shows that you have not understood the consept Promise.
 
-If "await", and no promise, the browser will encapsulate the return value in a Promise that resolves immediately.
+--If "await", and no promise, the browser will encapsulate the return value in a Promise that resolves immediately.
 
-If no connection with the database, the button "New task" should remain disabled. In your application, the button is enabled also if the back end does not respond to the ajax calls.
+--If no connection with the database, the button "New task" should remain disabled. In your application, the button is enabled also if the back end does not respond to the ajax calls.
 
-If no tasks in the database when the application starts, application shows an error in the browser console.
+--If no tasks in the database when the application starts, application shows an error in the browser console.
 
-The TaskBox dialog window does not close when user clicks the button "Add task".
+--The TaskBox dialog window does not close when user clicks the button "Add task".
 
-No confirmation window when deleting task.
+--No confirmation window when deleting task.
 
-The SELECT element for modifying the task status does not work as intended.  The status shown on the SELECT element is not <Modify> or is not reset to <Modify>.
+--The SELECT element for modifying the task status does not work as intended.  The status shown on the SELECT element is not <Modify> or is not reset to <Modify>.
 
-No confirmation window when updating task status.
+--No confirmation window when updating task status.
 
-You have problems with synchronization in your solution.
-A task can be removed from the view even if the back end does not respond to the ajax calls.
+--You have problems with synchronization in your solution.
+--A task can be removed from the view even if the back end does not respond to the ajax calls.
 
-You have problems with synchronization in your solution.
-The status of a task can be changed in the view if the back end does not respond to the ajax calls.
+--You have problems with synchronization in your solution.
+--The status of a task can be changed in the view if the back end does not respond to the ajax calls.
 

@@ -43,7 +43,7 @@ class TaskView extends HTMLElement {
 	 * Blir kalla når elementet er kopla til DOM-en
 	 * Set opp callbacks og lastar inn den opprinnelege dataen frå serveren
      */
-    connectedCallback() {
+    async connectedCallback() {
 		//Hentar fram service URL-en frå dataattributten
         this._serviceUrl = this.getAttribute('data-serviceurl') || './api';
         
@@ -51,13 +51,13 @@ class TaskView extends HTMLElement {
         this._setupTaskListCallbacks();
         this._setupTaskBoxCallback();
         
-		//Skrur på "New task"-knappen og lar oss legge til tasks
-        this._newTaskButton.disabled = false;
+		//Skrur av "New Task"-knappen viss vi ikkje får tilgong til databasen.
+        this._newTaskButton.disabled = true;
         this._newTaskButton.addEventListener('click', () => {
             this._taskBoxElem.show();
         });
 		//Lastar inn den opprinnelege dataen frå serveren
-        this._loadInitialData();
+        await this._loadInitialData();
     }
 
     /**
@@ -70,11 +70,12 @@ class TaskView extends HTMLElement {
             try {
                 const response = await this._updateTaskStatus(task.id, task.status);
                 if (response.responseStatus != null) {
-                    this._taskListElem._updateTask(task);
+                    this._taskListElem.updateTask(task);
                 } else {
-                    console.error('Failed to update task status');
+                    alert('Failed to update task status. The server did not accept the change.');
                 }
             } catch (error) {
+				alert("Error updating task. Please try again later.");
                 console.error('Error updating task status:', error);
             }
         });
@@ -86,9 +87,10 @@ class TaskView extends HTMLElement {
                     this._taskListElem.removeTask(taskId);
                     this._tasksFound(); //Oppdaterer oss om at tasks har blitt funne
                 } else {
-                    console.error('Failed to delete task');
+                    alert('Failed to delete task');
                 }
             } catch (error) {
+				alert("Error deleting task. Please try again later.");
                 console.error('Error deleting task:', error);
             }
         });
@@ -125,22 +127,28 @@ class TaskView extends HTMLElement {
                 this._fetchAllStatuses(),
                 this._fetchAllTasks()
             ]);
-            
-            if (statusesResponse.responseStatus != null) {
+
+            if (!statusesResponse || !statusesResponse.responseStatus || !tasksResponse || !tasksResponse.responseStatus) {
+				throw new Error("Invalid server response");
+				}
+				
                 this._taskListElem.setStatuseslist(statusesResponse.allstatuses);
                 this._taskBoxElem.setStatuseslist(statusesResponse.allstatuses);
-            }
-            
-            if (tasksResponse.responseStatus != null) {
-                for (const task of tasksResponse.tasks) {
-                    this._taskListElem.showTask(task);
-                }
-            }
-            
-            this._tasksFound();
+//Fail-check før looping, viss Array tom, viser "No tasks found."
+            if(Array.isArray(tasksResponse.tasks) !== null) {
+				for(const task of tasksResponse.tasks) {
+					this._taskListElem.showTask(task);
+				}
+			}
+//Backenden er OK, skrur på "New Task"-knappen
+			this._newTaskButton.disabled = false;
+			this._tasksFound();
+
         } catch (error) {
             console.error('Failed to load initial data:', error);
             this._showErrorMessage('Failed to load data from server');
+//Lar "New Task"-knappen vere skrudd av.
+			this._newTaskButton.disabled = true;
         }
     }
 
@@ -221,7 +229,7 @@ class TaskView extends HTMLElement {
 		this._messageDiv.innerHTML = "";
 		const p = document.createElement("p");
 		
-        this._messageDiv = `Error: ${message}`;
+        p.innerText = `Error: ${message}`;
 		this._messageDiv.appendChild(p);
     }
 
@@ -234,12 +242,11 @@ class TaskView extends HTMLElement {
 		const p = document.createElement("p");
         const numTasks = this._taskListElem.getNumtasks();
 
-        if (numTasks === null) {
+        if (numTasks !== 0) {
             p.innerText = `Found ${numTasks} tasks.`;
 			this._messageDiv.appendChild(p);
         } else {
-			
-            p.innerText = `Found ${numTasks} tasks.`;
+            p.innerText = `No tasks found.`;
 			this._messageDiv.appendChild(p);
         }
     }

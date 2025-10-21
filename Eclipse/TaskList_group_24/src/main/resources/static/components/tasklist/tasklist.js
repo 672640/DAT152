@@ -101,31 +101,51 @@ export class TaskList extends HTMLElement {
 //Verdiane kjem frå this._statuses, kontrollert av appen, ikkje brukardata.
 //Endra mange metodar frå å bruke querySelector til å bruke f.eks. row.cells[0].innerText = task.title;, som skal vere raskare.
         select.innerHTML = "";
+		//Viser <modify> først.
+		const modifyOption = document.createElement("option");
+		modifyOption.value = "0";
+		modifyOption.innerText = "<modify>";
+		modifyOption.selected = true; //Viser <modify> som default.
+		select.appendChild(modifyOption);
+		
+		//Legg til statusane etterpå
         for(const status of this._statuses) {
             const option = document.createElement("option");
             option.value = status;
             option.innerText = status;
-            if(status === task.status && status != null) option.selected = true;
             select.appendChild(option);
         }
+		//Tilbakestillar til <modify> etter ei endring.
         select.addEventListener("change", (e) => {
+			//Confirmation window når vi prøver å oppdatere ein task.
+			const confirmationUpdate = window.confirm(`Are you sure you want to update the task "${task.title}"?`);
+			if(!confirmationUpdate) return;
+			
             const newStatus = e.target.value;
+			//Når brukaren berre trykkar på "<modify>".
+			if(newStatus === "0") return;
+			//Sendar event til TaskView men oppdaterer ikkje dei ennå.
             if(this._changestatusCallback != null) {
                 this._changestatusCallback({
                     id: task.id,
                     status: newStatus
                 });
             }
-            row.cells[1].innerText = newStatus;
+			//Tilbakestillar dropdown-en til "<modify>".
+			e.target.value = "0";
         });
 
         const removeBtn = row.querySelector("button");
+		
         removeBtn.addEventListener("click", () => {
+			//Confirmation window når vi prøver å slette ein task.
+			const confirmationDelete = window.confirm(`Are you sure you want to delete the task "${task.title}"?`);
+			if(!confirmationDelete) return;
+			
             if(this._deletetaskCallback != null) {
                 this._deletetaskCallback(task.id);
-            }
-            this.removeTask(task.id);
-        });
+				//removeTask(task.id) skal ikkje bli kalla her.
+            }});
 
          this._table.querySelector("tbody").insertBefore(row, this._table.querySelector("tbody").firstChild);
     }
@@ -143,11 +163,11 @@ export class TaskList extends HTMLElement {
         }
 //Endra denne og i removeTask(id) for å sleppe å gå gjennom alle radene for å finne ein gitt verdi av data-taskid.
 //Nå: bruker querySelector med ein attributt-selector i staden for, som er raskare.
-        const row = this._table.querySelector(`tr[data-taskid="${task.id}"]`);
+        const row = this._table.querySelector(`tr[data-task-id="${task.id}"]`);
         if(row === null) {
             return;
         }
-
+		
         row.querySelectorAll("td")[1].innerText = task.status;
 
         const select = row.querySelector("select");
@@ -155,6 +175,8 @@ export class TaskList extends HTMLElement {
             for(const option of select.options) {
                 option.selected = option.value === task.status;
             }
+			//Gjer at <modify> blir reset-a riktig til <modify> etter vi har velt ein status.
+			select.value = "0";
         }
     }
 /*Lagrar ikkje tasksa i ein Javascript-array/map:
@@ -193,8 +215,12 @@ Dette gjer at vi tel tasksa direkte frå table-radene, sidan alle tasksa er tilg
 		    : null;
 		
         const row = (this._table !== null)
-		? this._table.querySelector(`tr[data-taskid="${id}"]`)
+		? this._table.querySelector(`tr[data-task-id="${id}"]`)
 		: null;
+		
+		if(row != null && tbody != null) {
+			tbody.removeChild(row);
+		}
     }
 
     /**

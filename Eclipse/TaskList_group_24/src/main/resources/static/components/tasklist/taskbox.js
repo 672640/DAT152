@@ -50,9 +50,11 @@ export class TaskBox extends HTMLElement {
         this._submitButton.addEventListener("click", () => {
             const title = this._input.value.trim();
             const status = this._select.value;
-            if (title != null && status != null) {
+            if (title !== "" && status !== "") {
                 const task = { title, status };
                 this._callbacks.forEach(callback => callback(task));
+				//Lukkar igjen dialogboksen når vi legg til ein task.
+				this.close();
             }
         });
     }
@@ -83,17 +85,19 @@ export class TaskBox extends HTMLElement {
 	this._messageDiv.appendChild(p);
 */
     setStatuseslist(list) {
-        if (Array.isArray(list) != null) {
+        if (Array.isArray(list) === true) {
             this._statuses = list;
-        } else this._statuses = [];
-        this._select.innerHTML = "";
-        for (const status of this._statuses) {
-            const option = document.createElement("option");
-            option.value = status;
-            option.textContent = status;
-            this._select.appendChild(option);
+        } else {
+            this._statuses = [];
         }
-    }
+         this._select.innerHTML = "";
+         for (const status of this._statuses) {
+             const option = document.createElement("option");
+             option.value = status;
+             option.innerText = status;
+             this._select.appendChild(option);
+         }
+     }
 
     /**
      * @public
@@ -104,10 +108,10 @@ export class TaskBox extends HTMLElement {
      * @description Legg til ein callback-funksjon til lista av funksjonar som blir kalla når brukaren legg til ein ny task. Callback-en får eit task-objekt med tittel og statuseigenskapar.
      */
     addNewtaskCallback(callback) {
-        if (typeof callback === "function" && typeof callback != null) {
+        if (typeof callback === "function") {
             this._callbacks.push(callback);
         }
-    }
+     }
 
     /**
 	 * Lukkar igjen modal-dialogen enten ved å trykke på x-en, bruke escape eller kalle denne metoden programmatisk.
