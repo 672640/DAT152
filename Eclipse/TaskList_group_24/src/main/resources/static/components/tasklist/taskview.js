@@ -252,7 +252,7 @@ class TaskView extends HTMLElement {
             p.innerText = `Found ${numTasks} tasks.`;
 			this._messageDiv.appendChild(p);
         } else {
-            p.innerText = `No tasks found.`;
+            p.innerText = `No tasks were found.`;
 			this._messageDiv.appendChild(p);
         }
     }
